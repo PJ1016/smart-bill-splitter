@@ -1,32 +1,16 @@
-import { useState } from "react";
-import { useMsal } from "@azure/msal-react";
-import { loginRequest } from "../auth/authConfig";
-import { Button } from "@mui/material";
+import { useGetProfileQuery } from "../features/graph/graphApi";
+import { Button, CircularProgress } from "@mui/material";
 
 const GraphProfile = () => {
-  const { instance, accounts } = useMsal();
-  const [profile, setProfile] = useState<any>(null);
-
-  const loadProfile = async () => {
-    const tokenResponse = await instance.acquireTokenSilent({
-      ...loginRequest,
-      account: accounts[0],
-    });
-
-    const response = await fetch("https://graph.microsoft.com/v1.0/me", {
-      headers: {
-        Authorization: `Bearer ${tokenResponse.accessToken}`,
-      },
-    });
-
-    const data = await response.json();
-    setProfile(data);
-  };
+  const { data: profile, isLoading, isError, refetch } = useGetProfileQuery();
 
   return (
     <>
-      <Button onClick={loadProfile}>Load Graph Profile</Button>
-
+      <Button onClick={refetch} disabled={isLoading}>
+        Reload Graph Profile
+      </Button>
+      {isLoading && <CircularProgress size={20} sx={{ ml: 2 }} />}
+      {isError && <p>Error loading profile</p>}
       {profile && <pre>{JSON.stringify(profile, null, 2)}</pre>}
     </>
   );
