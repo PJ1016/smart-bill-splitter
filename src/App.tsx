@@ -1,35 +1,48 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Provider } from 'react-redux';
-import Layout from './components/Layout';
-import AddMemory from './pages/AddMemory';
-import Memories from './pages/Memories';
-import Chat from './pages/Chat';
-import Home from './pages/Home';
-import ErrorBoundary from './components/ErrorBoundary';
-import { store } from './features/memories/store';
-import { theme } from './theme';
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Provider } from "react-redux";
+import Layout from "./components/Layout";
+import AddMemory from "./pages/AddMemory";
+import Memories from "./pages/Memories";
+import Chat from "./pages/Chat";
+import Home from "./pages/Home";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { store } from "./features/memories/store";
+import { theme } from "./theme";
+import { MsalAuthenticationTemplate, useMsal } from "@azure/msal-react";
+import { InteractionType } from "@azure/msal-browser";
+import GraphProfile from "./pages/GraphProfile";
+import { loginRequest } from "./auth/authConfig";
 function App() {
+  const { instance, accounts } = useMsal();
+  console.log("instance", instance);
+  console.log("accounts", accounts);
+
   return (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Router>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/add-memory" element={<AddMemory />} />
-                <Route path="/memories" element={<Memories />} />
-                <Route path="/chat" element={<Chat />} />
-              </Routes>
-            </Layout>
-          </Router>
-        </ThemeProvider>
-      </Provider>
-    </ErrorBoundary>
+    <MsalAuthenticationTemplate
+      authenticationRequest={loginRequest}
+      interactionType={InteractionType.Redirect}
+    >
+      <ErrorBoundary>
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Router>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/add-memory" element={<AddMemory />} />
+                  <Route path="/memories" element={<Memories />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/graph" element={<GraphProfile />} />
+                </Routes>
+              </Layout>
+            </Router>
+          </ThemeProvider>
+        </Provider>
+      </ErrorBoundary>
+    </MsalAuthenticationTemplate>
   );
 }
 
