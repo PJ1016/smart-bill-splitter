@@ -1,5 +1,5 @@
 import { Box, Paper, Typography, Card, CardContent, Chip } from '@mui/material';
-import { categoryColors } from '../App';
+import { categoryColors } from '../theme';
 
 interface Memory {
   placeName: string;
@@ -26,6 +26,7 @@ const ChatBubble = ({ message }: ChatBubbleProps) => {
       backgroundColor: colors.light,
       color: colors.dark,
       fontWeight: 600,
+      border: 'none',
     };
   };
 
@@ -34,85 +35,89 @@ const ChatBubble = ({ message }: ChatBubbleProps) => {
       sx={{
         display: 'flex',
         justifyContent: message.isUser ? 'flex-end' : 'flex-start',
-        mb: 2,
+        mb: 3,
       }}
     >
-      <Paper
-        sx={{
-          p: 2.5,
-          maxWidth: '70%',
-          background: message.isUser 
-            ? 'linear-gradient(45deg, #667eea 30%, #764ba2 90%)' 
-            : 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(30, 30, 30, 0.95) 100%)',
-          color: '#FFFFFF',
-          borderRadius: 3,
-          border: message.isUser ? 'none' : '1px solid rgba(255, 215, 0, 0.3)',
-          backdropFilter: 'blur(20px)',
-        }}
-      >
-        <Typography 
-          variant="body1"
+      <Box sx={{ maxWidth: '75%' }}>
+        <Paper
+          elevation={0}
           sx={{
-            color: '#FFFFFF',
-            fontWeight: 500,
+            p: 2.5,
+            bgcolor: message.isUser ? 'primary.main' : 'white',
+            color: message.isUser ? 'primary.contrastText' : 'text.primary',
+            borderRadius: 3,
+            borderTopLeftRadius: message.isUser ? 12 : 0,
+            borderTopRightRadius: message.isUser ? 0 : 12,
+            border: message.isUser ? 'none' : '1px solid',
+            borderColor: 'grey.200',
+            boxShadow: message.isUser ? '0 4px 6px -1px rgba(37, 99, 235, 0.2)' : '0 1px 2px 0 rgba(0,0,0,0.05)',
           }}
         >
-          {message.text}
-        </Typography>
-        
-        {message.memories && (
-          <Box sx={{ mt: 2 }}>
-            {message.memories.map((memory, index) => (
-              <Card 
-                key={index} 
-                sx={{ 
-                  mb: 1, 
-                  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%)',
-                  border: '1px solid rgba(78, 205, 196, 0.3)',
-                }}
-              >
-                <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{
-                      color: '#FFD700',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {memory.placeName}
-                  </Typography>
-                  <Typography 
-                    variant="body2" 
-                    sx={{
-                      color: '#4ECDC4',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {memory.city}
-                  </Typography>
-                  <Chip
-                    label={memory.category}
-                    size="small"
-                    sx={{ mt: 0.5, ...getCategoryChip(memory.category) }}
-                  />
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
-        )}
-        
-        <Typography 
-          variant="caption" 
-          sx={{ 
-            color: '#B0B0B0',
-            fontWeight: 500,
-            display: 'block', 
-            mt: 1 
-          }}
-        >
-          {message.timestamp.toLocaleTimeString()}
-        </Typography>
-      </Paper>
+          <Typography 
+            variant="body1"
+            sx={{
+              fontWeight: 400,
+              lineHeight: 1.6,
+            }}
+          >
+            {message.text}
+          </Typography>
+          
+          {message.memories && (
+            <Box sx={{ mt: 2.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              {message.memories.map((memory, index) => (
+                <Card 
+                  key={index} 
+                  elevation={0}
+                  sx={{ 
+                    bgcolor: message.isUser ? 'rgba(255,255,255,0.1)' : 'grey.50',
+                    border: '1px solid',
+                    borderColor: message.isUser ? 'rgba(255,255,255,0.2)' : 'grey.200',
+                  }}
+                >
+                  <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                    <Typography 
+                      variant="subtitle2" 
+                      sx={{
+                        color: message.isUser ? 'white' : 'text.primary',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {memory.placeName}
+                    </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{
+                        color: message.isUser ? 'rgba(255,255,255,0.9)' : 'text.secondary',
+                        mb: 1,
+                      }}
+                    >
+                      {memory.city}
+                    </Typography>
+                    <Chip
+                      label={memory.category}
+                      size="small"
+                      sx={getCategoryChip(memory.category)}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          )}
+          
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              color: message.isUser ? 'rgba(255,255,255,0.7)' : 'text.secondary',
+              display: 'block', 
+              mt: 1,
+              textAlign: 'right',
+            }}
+          >
+            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </Typography>
+        </Paper>
+      </Box>
     </Box>
   );
 };

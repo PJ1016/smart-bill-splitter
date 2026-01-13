@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CloudUpload, ViewList, Chat as ChatIcon, Luggage } from '@mui/icons-material';
 
@@ -13,85 +13,97 @@ const Layout = ({ children }: LayoutProps) => {
 
   const navItems = [
     { label: 'Add Memory', path: '/add-memory', icon: CloudUpload },
-    { label: 'View Memories', path: '/memories', icon: ViewList },
+    { label: 'Memories', path: '/memories', icon: ViewList },
     { label: 'AI Chat', path: '/chat', icon: ChatIcon },
   ];
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
       <AppBar 
-        position="static" 
+        position="sticky" 
+        elevation={0}
         sx={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+          bgcolor: 'background.paper',
+          borderBottom: '1px solid',
+          borderColor: 'divider',
         }}
       >
-        <Toolbar sx={{ py: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <Box
-              sx={{
-                background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
-                borderRadius: '50%',
-                p: 1,
-                mr: 2,
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-              }}
-            >
-              <Luggage sx={{ fontSize: 28, color: 'white' }} />
-            </Box>
-            <Typography 
-              variant="h4" 
-              component="div" 
+        <Container maxWidth="lg">
+          <Toolbar disableGutters sx={{ minHeight: { xs: 64, md: 70 } }}>
+            <Box 
               sx={{ 
-                fontWeight: 800,
-                fontFamily: '"Inter", sans-serif',
-                letterSpacing: '-0.02em',
-                background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                display: 'flex', 
+                alignItems: 'center', 
+                flexGrow: 1, 
+                cursor: 'pointer',
+                gap: 1.5 
               }}
+              onClick={() => navigate('/')}
             >
-              Travel Memory Hub
-            </Typography>
-          </Box>
-          {navItems.map((item) => {
-            const IconComponent = item.icon;
-            return (
-              <Button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                startIcon={<IconComponent />}
+              <Box
                 sx={{
-                  background: location.pathname === item.path 
-                    ? 'rgba(255, 255, 255, 0.2)' 
-                    : 'transparent',
-                  color: 'white',
-                  mx: 1,
-                  borderRadius: 3,
-                  px: 3,
-                  py: 1.5,
-                  fontWeight: 600,
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.15)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                  },
+                  bgcolor: 'primary.main',
+                  borderRadius: 2,
+                  p: 0.8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                {item.label}
-              </Button>
-            );
-          })}
-        </Toolbar>
+                <Luggage sx={{ fontSize: 24, color: 'white' }} />
+              </Box>
+              <Typography 
+                variant="h6" 
+                component="div" 
+                sx={{ 
+                  fontWeight: 700,
+                  color: 'text.primary',
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                Travel Memory Hub
+              </Typography>
+            </Box>
+            
+            <Box component="nav" sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1 }}>
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                const IconComponent = item.icon;
+                return (
+                  <Button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    startIcon={<IconComponent />}
+                    variant="text"
+                    sx={{
+                      color: isActive ? 'primary.main' : 'text.secondary',
+                      bgcolor: isActive ? 'primary.light' : 'transparent',
+                      background: isActive ? (theme) => alpha(theme.palette.primary.main, 0.1) : 'transparent',
+                      fontWeight: 600,
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      '&:hover': {
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, isActive ? 0.15 : 0.05),
+                        color: isActive ? 'primary.main' : 'text.primary',
+                      },
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                );
+              })}
+            </Box>
+          </Toolbar>
+        </Container>
       </AppBar>
-      {children}
+      
+      <Box component="main" sx={{ flexGrow: 1, py: 4 }}>
+        {children}
+      </Box>
     </Box>
   );
 };
+import { alpha } from '@mui/material/styles';
 
 export default Layout;

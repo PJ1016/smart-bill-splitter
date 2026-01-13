@@ -11,14 +11,13 @@ import {
   InputAdornment,
   Avatar,
   Skeleton,
+  CardMedia,
 } from '@mui/material';
-import { Search, FolderOpen, Add } from '@mui/icons-material';
-import { categoryColors } from '../App';
+import { Search, FolderOpen, Add, LocationOn } from '@mui/icons-material';
+import { categoryColors } from '../theme';
 import { useNavigate } from 'react-router-dom';
 import { useGetMemoriesQuery, useSearchMemoriesQuery } from '../features/memories/memoriesApi';
 import type { Memory } from '../features/memories/types';
-
-
 
 const Memories = () => {
   const navigate = useNavigate();
@@ -41,77 +40,74 @@ const Memories = () => {
       backgroundColor: colors.light,
       color: colors.dark,
       fontWeight: 600,
+      border: 'none',
     };
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 6, mb: 6 }}>
-      <Box
-        sx={{
-          textAlign: 'center',
-          mb: 6,
-          p: 4,
-          background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(30, 30, 30, 0.9) 100%)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: 4,
-          border: '1px solid rgba(255, 107, 107, 0.3)',
-        }}
-      >
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 10 }}>
+      <Box sx={{ mb: 6, textAlign: 'center' }}>
         <Typography 
           variant="h2" 
           component="h1" 
           sx={{
             fontWeight: 800,
-            background: 'linear-gradient(45deg, #FF6B6B, #FFD700, #4ECDC4)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            mb: 2,
+            color: 'text.primary',
+            mb: 1.5,
+            letterSpacing: '-0.03em',
           }}
         >
-          🌎 Your Memories
+          Your Memories
         </Typography>
         <Typography 
-          variant="h6" 
-          sx={{ 
-            color: '#FF6B6B',
-            fontWeight: 600,
-          }}
-        >
-          Relive your incredible travel adventures
-        </Typography>
+            variant="h6" 
+            color="text.secondary"
+            sx={{ fontWeight: 400, maxWidth: 600, mx: 'auto' }}
+          >
+            Relive your incredible travel adventures and specific details.
+          </Typography>
       </Box>
 
       <TextField
         fullWidth
-        placeholder="Search memories (e.g., 'Ghevar', 'Jaipur')"
+        placeholder="Search for a memory..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Search sx={{ color: '#4ECDC4' }} />
+              <Search color="action" />
             </InputAdornment>
           ),
         }}
         sx={{ 
-          mb: 3,
-          '& .MuiInputBase-input::placeholder': {
-            color: '#4ECDC4',
-            fontWeight: 500,
-          },
+            maxWidth: 600, 
+            mx: 'auto',
+            display: 'block',
+            mb: 6,
+            '& .MuiOutlinedInput-root': {
+                bgcolor: 'white',
+                boxShadow: '0 1px 3px 0 rgba(0,0,0,0.1)',
+                '&:hover': {
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                },
+                '&.Mui-focused': {
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                }
+            }
         }}
       />
 
       {isLoading ? (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {[1, 2, 3].map((n) => (
             <Grid item xs={12} sm={6} md={4} key={n}>
-              <Card>
+              <Card elevation={0} sx={{ height: '100%', borderRadius: 3 }}>
+                <Skeleton variant="rectangular" height={200} />
                 <CardContent>
-                  <Skeleton variant="text" width="80%" height={32} />
-                  <Skeleton variant="text" width="60%" height={24} sx={{ mb: 1 }} />
-                  <Skeleton variant="rectangular" width={80} height={24} sx={{ borderRadius: 1, mb: 1 }} />
-                  <Skeleton variant="text" width="100%" height={20} />
+                  <Skeleton variant="text" width="60%" height={32} sx={{ mb: 1 }} />
+                  <Skeleton variant="text" width="40%" height={24} sx={{ mb: 2 }} />
+                  <Skeleton variant="rectangular" width={80} height={24} sx={{ borderRadius: 1 }} />
                 </CardContent>
               </Card>
             </Grid>
@@ -119,14 +115,14 @@ const Memories = () => {
         </Grid>
       ) : filteredMemories.length === 0 ? (
         <Card 
+            elevation={0}
           sx={{ 
             textAlign: 'center', 
             py: 8,
+            maxWidth: 500,
+            mx: 'auto',
+            bgcolor: 'transparent',
             cursor: allMemories.length === 0 ? 'pointer' : 'default',
-            '&:hover': allMemories.length === 0 ? {
-              boxShadow: 4,
-              transform: 'translateY(-2px)',
-            } : {},
           }}
           onClick={() => allMemories.length === 0 && navigate('/add-memory')}
         >
@@ -135,120 +131,102 @@ const Memories = () => {
               width: 80, 
               height: 80, 
               mx: 'auto', 
-              mb: 2,
-              bgcolor: allMemories.length === 0 ? 'primary.main' : 'grey.300',
+              mb: 3,
+              bgcolor: 'primary.light',
+              color: 'primary.main',
             }}>
               {allMemories.length === 0 ? <Add sx={{ fontSize: 40 }} /> : <FolderOpen sx={{ fontSize: 40 }} />}
             </Avatar>
-            <Typography 
-              variant="h6" 
-              gutterBottom
-              sx={{
-                color: '#4ECDC4',
-                fontWeight: 600,
-              }}
-            >
-              {searchTerm ? 'No memories found matching your search.' : 'No memories yet. Start your journey!'}
+            <Typography variant="h5" color="text.primary" gutterBottom fontWeight={700}>
+              {searchTerm ? 'No results found' : 'Start your collection'}
             </Typography>
-            {allMemories.length === 0 && (
-              <Typography 
-                variant="body2" 
-                sx={{ 
-                  mt: 1,
-                  color: '#FFD700',
-                  fontWeight: 600,
-                }}
-              >
-                Click here to add your first memory
-              </Typography>
-            )}
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+              {searchTerm 
+                ? `We couldn't find any memories matching "${searchTerm}"` 
+                : "You haven't added any memories yet. Capture your first journey now!"}
+            </Typography>
           </CardContent>
         </Card>
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {filteredMemories.map((memory: Memory) => (
             <Grid item xs={12} sm={6} md={4} key={memory.id}>
               <Card 
+                elevation={0}
                 sx={{ 
                   height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
                   cursor: 'pointer',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  bgcolor: 'white',
                   borderRadius: 3,
+                  border: '1px solid',
+                  borderColor: 'grey.200',
+                  transition: 'all 0.2s',
                   '&:hover': {
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-                    transform: 'translateY(-8px) scale(1.03)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                    borderColor: 'primary.light',
                   },
                 }}
               >
                 {memory.imageUrl && (
-                  <Box sx={{ height: 120, overflow: 'hidden' }}>
-                    <img
-                      src={`http://localhost:3001${memory.imageUrl}`}
-                      alt={memory.placeName}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
+                    <CardMedia
+                        component="img"
+                        height="200"
+                        image={`http://localhost:3001${memory.imageUrl}`}
+                        alt={memory.placeName}
+                        sx={{ objectFit: 'cover' }}
                     />
-                  </Box>
                 )}
-                <CardContent>
-                  <Typography 
-                    variant="h6" 
-                    gutterBottom 
-                    noWrap
-                    sx={{
-                      color: '#FFD700',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {memory.placeName}
-                  </Typography>
-                  <Typography 
-                    variant="body2" 
-                    gutterBottom
-                    sx={{
-                      color: '#4ECDC4',
-                      fontWeight: 600,
-                    }}
-                  >
-                    📍 {memory.city}
-                  </Typography>
-                  <Box sx={{ mb: 1 }}>
+                <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                  <Box sx={{ mb: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <Box>
+                        <Typography 
+                            variant="h6" 
+                            component="h2"
+                            sx={{ fontWeight: 700, lineHeight: 1.2, mb: 0.5 }}
+                        >
+                            {memory.placeName}
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary', gap: 0.5 }}>
+                            <LocationOn sx={{ fontSize: 16 }} />
+                            <Typography variant="body2" fontWeight={500}>
+                                {memory.city}
+                            </Typography>
+                        </Box>
+                    </Box>
+                  </Box>
+                  
+                  <Box sx={{ mb: 2 }}>
                     <Chip
                       label={memory.category}
                       size="small"
                       sx={getCategoryChip(memory.category)}
                     />
                   </Box>
+
                   <Typography 
                     variant="body2" 
+                    color="text.secondary"
                     sx={{ 
-                      mb: 1,
+                      mb: 2,
                       display: '-webkit-box',
-                      WebkitLineClamp: 2,
+                      WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
-                      color: '#FFFFFF',
-                      fontWeight: 500,
+                      lineHeight: 1.6,
                     }}
                   >
                     {memory.notes}
                   </Typography>
-                  <Typography 
-                    variant="caption" 
-                    sx={{
-                      color: '#FF6B6B',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {new Date(memory.createdAt).toLocaleDateString()}
+                  
+                  <Typography variant="caption" color="text.disabled" fontWeight={500} sx={{ mt: 'auto', display: 'block' }}>
+                    Added on {new Date(memory.createdAt).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    })}
                   </Typography>
                 </CardContent>
               </Card>
