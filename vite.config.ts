@@ -18,6 +18,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "src/vite-env.d.ts",
+        "src/main.tsx",
+        "src/setupTests.ts",
+        "src/testing-playground/basic/counter/counterUtils.test.ts",
+      ],
     },
   },
 });

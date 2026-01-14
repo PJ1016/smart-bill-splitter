@@ -49,6 +49,14 @@ const Home = () => {
       path: "/chat",
       color: theme.palette.info.main,
     },
+    {
+      title: "Testing Playground",
+      description:
+        "Practice area for React testing with various component examples.",
+      icon: Luggage, // Reusing Luggage icon since Science/Experiment isn't imported
+      path: "/test-playground",
+      color: theme.palette.warning.main,
+    },
   ];
 
   return (
@@ -92,7 +100,7 @@ const Home = () => {
           {actions.map((action) => {
             const Icon = action.icon;
             return (
-              <Grid item xs={12} md={4} key={action.title}>
+              <Grid item xs={12} md={3} key={action.title}>
                 <Card
                   elevation={0}
                   sx={{

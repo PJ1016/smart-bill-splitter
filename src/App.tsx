@@ -11,6 +11,13 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { store } from "./features/memories/store";
 import { theme } from "./theme";
 import { MsalAuthenticationTemplate, useMsal } from "@azure/msal-react";
+import TestPlaygroundHome from "./testing-playground/TestPlaygroundHome";
+import Counter from "./testing-playground/basic/counter/Counter";
+import ToggleButton from "./testing-playground/basic/toggle/ToggleButton";
+import UserForm from "./testing-playground/intermediate/forms/UserForm";
+import RoleBasedPanel from "./testing-playground/intermediate/conditional-rendering/RoleBasedPanel";
+import SearchBox from "./testing-playground/intermediate/useeffect/SearchBox";
+import UsersPage from "./testing-playground/redux-toolkit-query/pages/UsersPage";
 import { InteractionType } from "@azure/msal-browser";
 import GraphProfile from "./pages/GraphProfile";
 import { loginRequest } from "./auth/authConfig";
@@ -36,6 +43,33 @@ function App() {
                   <Route path="/memories" element={<Memories />} />
                   <Route path="/chat" element={<Chat />} />
                   <Route path="/graph" element={<GraphProfile />} />
+
+                  {/* Testing Playground Routes */}
+                  <Route
+                    path="/test-playground"
+                    element={<TestPlaygroundHome />}
+                  />
+                  <Route
+                    path="/test-playground/counter"
+                    element={<Counter />}
+                  />
+                  <Route
+                    path="/test-playground/toggle"
+                    element={<ToggleButton />}
+                  />
+                  <Route path="/test-playground/form" element={<UserForm />} />
+                  <Route
+                    path="/test-playground/role"
+                    element={<RoleBasedPanel role="user" />}
+                  />
+                  <Route
+                    path="/test-playground/search"
+                    element={<SearchBox />}
+                  />
+                  <Route
+                    path="/test-playground/rtk-query"
+                    element={<UsersPage />}
+                  />
                 </Routes>
               </Layout>
             </Router>
